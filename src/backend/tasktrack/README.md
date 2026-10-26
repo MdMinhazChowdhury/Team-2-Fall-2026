@@ -1,3 +1,3 @@
-# Backend application package
+# Backend application
 
-Planned boundaries: API routes, configuration, security, database access, domain models, validation schemas, business services, background jobs, adapters, and observability. Application code begins in Phase 2.
+FastAPI routes call the account/task business and persistence modules in this package. SQLAlchemy models use PostgreSQL; every account-owned operation enforces the authenticated owner. `jobs.py` contains Celery configuration and durable recurrence/reminder/mail/export work. Database schema changes live in the sibling `migrations` directory, and tests are under `tests/backend`.

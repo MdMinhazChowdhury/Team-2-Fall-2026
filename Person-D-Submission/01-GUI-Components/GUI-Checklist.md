@@ -1,0 +1,17 @@
+# GUI components checklist
+
+All listed component groups have implementation and local test evidence. This checklist does not certify every possible control interaction or manual accessibility.
+
+| Component group | Implemented controls | Source in repository | Evidence |
+|---|---|---|---|
+| Account screens | Register, verify email, login, logout, recovery | src/frontend/features/Auth.tsx | Unit U01–U04; browser workflows |
+| Workspace and lists | Navigation, list create, rename, confirmed deletion | src/frontend/routes/Workspace.tsx | PostgreSQL list validation and version tests; browser creation |
+| Task editor | Title, description, list, due date, priority, status, tags | src/frontend/features/TaskEditor.tsx | U05–U07; full browser workflow |
+| Checklist | Add, edit, reorder, complete, remove | src/frontend/features/TaskEditor.tsx | U05/U07; API and browser assertions |
+| Search and filters | Combined filters, sorting, pagination, dashboard | src/frontend/routes/Workspace.tsx | Fixed-data API assertions and browser filters |
+| Task actions | Complete/reopen, bulk edits, confirmed Trash, restore | src/frontend/routes/Workspace.tsx | Atomic API tests and browser completion/Trash/restore |
+| Calendar and schedules | Month/week/agenda, recurrence, reminders | src/frontend/features/Views.tsx; TaskEditor.tsx | Browser schedule/calendar; worker-function and DST tests |
+| Supporting views | Tags, activity, reports, notifications | src/frontend/features/Views.tsx; TaskEditor.tsx; Workspace.tsx | API assertions and organization browser scenario |
+| Settings and data | Preferences, sessions, password/account controls, import/export | src/frontend/features/Views.tsx | API settings/export/import; browser preferences and round trip |
+| Feedback and dialogs | Validation, storage errors, confirmation, keyboard dismissal | src/frontend/components/Dialog.tsx; Auth.tsx; TaskEditor.tsx | U02/U06/U07; browser validation/cancel/Escape |
+| Responsive access | 360, 768 and 1920 pixel layouts | src/frontend/app/styles.css | Two browser engines; overflow and automated axe checks |

@@ -1,0 +1,10 @@
+.git
+.env
+.env.*
+.venv
+.local
+node_modules
+dist
+docs/evidence
+test-results
+*.log

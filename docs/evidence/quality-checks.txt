@@ -1,0 +1,13 @@
+
+> tasktrack@0.1.0 lint
+> eslint src/frontend tests/frontend tests/e2e
+
+
+> tasktrack@0.1.0 format:check
+> prettier --check src/frontend tests/frontend tests/e2e *.json *.ts
+
+Checking formatting...
+All matched files use Prettier code style!
+All checks passed!
+30 files already formatted
+Success: no issues found in 13 source files

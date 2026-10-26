@@ -1,0 +1,10 @@
+﻿Date,Participants,Communication,Topic,Decision or outcome
+2026-10-25,User to assistant,Work request,"Extract Java archive, run baseline tests, wire GUI and retain Person D evidence",Initial desktop scope established; separate legacy evidence retained
+2026-10-25,User to assistant,Evidence request,Asked which file contains Person D evidence,Evidence location requested
+2026-10-25,User to assistant,Directory and alignment instruction,Selected Team-2-Fall-2026; requested correct folders and alignment with documents,Downloads repository became active work directory
+2026-10-25,Assistant to user,Scope clarification recorded in prior log,Repository plans described a React/FastAPI/PostgreSQL web app,Web scope distinguished from Java desktop work
+2026-10-25,User to assistant,Continuation,User said continue,Work continued against repository web specification
+2026-10-25,Assistant to user,Implementation and testing updates recorded in prior log,"API/UI work, browser fixes, validation, accessibility, persistence and performance checks","Existing logs record 33 database cases, 8 component cases, 6 browser cases and restart probe"
+2026-10-25,Assistant to user,Limitations recorded in prior log,Firefox launch timeout and unverified external release checks,"No unsupported browser, mail, broker, deployment or usability pass claimed"
+2026-10-25,User to assistant,Person D rubric,Supplied five report criteria worth two points each; requested a folder,Submission organized into five matching evidence sections
+2026-10-25,Assistant to user,Packaging update,"Explained existing 47 automated passes, restart result and remaining qualifications","Report, test records, screenshots and this communication table consolidated"

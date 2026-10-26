@@ -1,0 +1,7 @@
+﻿ID,Browser project,Workflow and assertions,Actual result,Milliseconds
+B01,chrome,"register, verify, create, edit, filter, complete, reload, cancel delete and restore",passed,4349
+B02,chrome,"responsive controls and automated accessibility at 360, 768 and 1920 pixels",passed,6139
+B03,chrome,"tags, bulk actions, calendar, schedules, reports, preferences and import/export",passed,7454
+B04,chromium,"register, verify, create, edit, filter, complete, reload, cancel delete and restore",passed,4611
+B05,chromium,"responsive controls and automated accessibility at 360, 768 and 1920 pixels",passed,5854
+B06,chromium,"tags, bulk actions, calendar, schedules, reports, preferences and import/export",passed,6733

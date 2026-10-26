@@ -1,0 +1,15 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\lloyd\Downloads\Team-2-Fall-2026
+configfile: pyproject.toml
+plugins: anyio-4.15.1, platformdirs-4.13.5, cov-7.1.0
+collected 33 items
+
+tests\backend\test_application.py .......................                [ 69%]
+tests\backend\test_exports.py .                                          [ 72%]
+tests\backend\test_migrations_security.py ....                           [ 84%]
+tests\backend\test_time_and_commit.py ....                               [ 96%]
+tests\performance\test_workload.py .                                     [100%]
+
+- generated xml file: C:\Users\lloyd\Downloads\Team-2-Fall-2026\docs\evidence\backend-results.xml -
+============================= 33 passed in 16.89s =============================

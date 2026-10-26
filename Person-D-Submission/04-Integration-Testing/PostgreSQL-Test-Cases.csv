@@ -1,0 +1,34 @@
+﻿ID,Test module,Exact test name,Case and expected assertion summary,Actual result,Seconds
+I01,tests.backend.test_application,test_auth_verification_single_use_and_hashed_secrets,auth verification single use and hashed secrets,Pass,0.622
+I02,tests.backend.test_application,test_recovery_revokes_sessions_and_is_single_use,recovery revokes sessions and is single use,Pass,0.465
+I03,tests.backend.test_application,test_list_validation[body0],Blank list name rejected with 422 and no list stored,Pass,0.338
+I04,tests.backend.test_application,test_list_validation[body1],Whitespace-only list name rejected with 422 and no list stored,Pass,0.330
+I05,tests.backend.test_application,test_list_validation[body2],101-character list name rejected with 422 and no list stored,Pass,0.325
+I06,tests.backend.test_application,test_list_confirmation_versions_and_nonempty_policy,list confirmation versions and nonempty policy,Pass,0.502
+I07,tests.backend.test_application,test_task_validation[change0],Empty title rejected by server validation,Pass,0.340
+I08,tests.backend.test_application,test_task_validation[change1],Whitespace title rejected by server validation,Pass,0.369
+I09,tests.backend.test_application,test_task_validation[change2],201-character title rejected by server validation,Pass,0.363
+I10,tests.backend.test_application,test_task_validation[change3],5001-character description rejected by server validation,Pass,0.377
+I11,tests.backend.test_application,test_task_validation[change4],Unknown priority URGENT rejected by server validation,Pass,0.344
+I12,tests.backend.test_application,test_task_validation[change5],Unknown status INVALID rejected by server validation,Pass,0.449
+I13,tests.backend.test_application,test_task_validation[change6],Invalid date 2026-02-29 rejected by server validation,Pass,0.449
+I14,tests.backend.test_application,test_create_edit_move_status_priority_checklist_and_conflict,create edit move status priority checklist and conflict,Pass,0.420
+I15,tests.backend.test_application,test_trash_restoration_deadline_and_permanent_delete,trash restoration deadline and permanent delete,Pass,0.421
+I16,tests.backend.test_application,test_account_isolation_every_resource,account isolation every resource,Pass,0.582
+I17,tests.backend.test_application,test_csrf_origin_errors_rate_limit_and_headers,csrf origin errors rate limit and headers,Pass,0.317
+I18,tests.backend.test_application,test_dashboard_filters_pagination_reports,dashboard filters pagination reports,Pass,0.470
+I19,tests.backend.test_application,test_bulk_rollback_and_tag_management,bulk rollback and tag management,Pass,0.437
+I20,tests.backend.test_application,test_export_import_preview_validation_apply_once_and_rollback,export import preview validation apply once and rollback,Pass,0.535
+I21,tests.backend.test_application,test_preferences_password_sessions_and_account_delete,preferences password sessions and account delete,Pass,0.607
+I22,tests.backend.test_application,test_recurring_jobs_reminder_deduplication_and_restart,recurring jobs reminder deduplication and restart,Pass,0.523
+I23,tests.backend.test_application,test_mail_retry_bounded_and_encrypted,mail retry bounded and encrypted,Pass,0.250
+I24,tests.backend.test_exports,test_durable_export_job_restart_owner_scope_and_download,durable export job restart owner scope and download,Pass,0.517
+I25,tests.backend.test_migrations_security,test_migration_upgrade_downgrade_and_metadata_agreement,migration upgrade downgrade and metadata agreement,Pass,0.694
+I26,tests.backend.test_migrations_security,test_concurrent_stale_writes_have_one_winner,concurrent stale writes have one winner,Pass,0.400
+I27,tests.backend.test_migrations_security,test_production_configuration_fails_closed_and_cookie_flags,production configuration fails closed and cookie flags,Pass,0.287
+I28,tests.backend.test_migrations_security,test_request_size_limit_and_error_redaction,request size limit and error redaction,Pass,0.184
+I29,tests.backend.test_time_and_commit,test_reminders_use_account_timezone_and_reject_dst_gaps_and_ambiguity,reminders use account timezone and reject dst gaps and ambiguity,Pass,0.427
+I30,tests.backend.test_time_and_commit,test_commit_failure_is_redacted_and_never_reports_success,commit failure is redacted and never reports success,Pass,0.436
+I31,tests.backend.test_time_and_commit,test_revoke_all_sessions_requires_csrf_and_signs_out,revoke all sessions requires csrf and signs out,Pass,0.329
+I32,tests.backend.test_time_and_commit,test_completion_report_keeps_history_when_task_is_reopened,completion report keeps history when task is reopened,Pass,0.477
+I33,tests.performance.test_workload,test_ten_accounts_five_hundred_tasks_each,ten accounts five hundred tasks each,Pass,2.914

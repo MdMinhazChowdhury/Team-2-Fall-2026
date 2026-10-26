@@ -1,52 +1,26 @@
-# TaskTrack Project Progress
+# TaskTrack implementation progress
 
-## Status date
+Status date: October 25, 2026 (America/New_York).
 
-October 18, 2026
+The previously planning-only repository now contains a web implementation under the approved source/test boundaries. Existing Git history and requirements were retained. The Java desktop source was not copied into this web repository.
 
-## Current status
+## Implemented
 
-Phase 1 planning is complete in documentation. The repository previously contained only a minimal README and one initial commit. No application features, tests, benchmarks, user studies, deployments, or operational rehearsals have been completed.
+Authentication/session/security APIs and UI; private lists/tasks/checklists; Trash/restoration; concurrency versions; dashboard/filter/search/sort/pagination; calendar; tags/bulk operations; activity and completion-event reporting; timezone/preferences/session/account settings; durable recurrence/reminder functions and Celery configuration; encrypted mail outbox; background export jobs; validated preview/transactional import; versioned Alembic migrations; dependency locks; Compose/Caddy/Dockerfiles and CI configuration.
 
-## Completed planning work
+## Local verification
 
-- Defined the TaskTrack project identity and description.
-- Recorded FR1-FR20, NFR1-NFR15, and exactly O1-O5.
-- Proposed a modular-monolith architecture and required repository boundaries.
-- Outlined the database entities, ownership rules, and important constraints.
-- Documented security controls and verification expectations.
-- Selected the durable background-work approach through ADR-0002.
-- Mapped requirements and objectives to phases and evidence.
-- Created the eight-phase implementation plan and mapped backlog.
-- Created structural placeholders without application code.
-- Preserved the existing repository identity and initial history.
+See `verification.md` and `evidence/` for exact test outputs. The recorded local runs cover real PostgreSQL, frontend controls, Chromium browser workflows, responsive widths 360/768/1920, automated accessibility, migrations, concurrency, transaction rollback, account isolation, DST/date behavior, retry/deduplication and a documented ten-account workload. No SQLite substitute was used.
 
-## Exact next steps
+## Incomplete release evidence
 
-1. Team reviews and approves the requirements, release sequence, architecture, and open decisions.
-2. Assign owners for frontend foundation, backend foundation, test infrastructure, and documentation.
-3. Verify supported stable dependency versions against official documentation and record the date and sources.
-4. Create frontend and backend project manifests and lockfiles.
-5. Add the root Compose entry point, PostgreSQL, Redis, and the same-origin development proxy.
-6. Configure SQLAlchemy, Alembic, and the initial account/session migration.
-7. Configure formatting, linting, type checking, test discovery, builds, migration checks, and security scans in GitHub Actions.
-8. Have a second developer follow the setup instructions from a fresh checkout and record corrections.
-9. Update this file with actual evidence and blockers before starting authentication implementation.
+- Separate instructor rubric/document has not been provided. Assignment compliance cannot be certified from project planning files alone.
+- Firefox failed to finish launching on this host. No Firefox pass is claimed.
+- Docker was unavailable; Compose, Redis broker/worker transport, worker process restart behavior and real SMTP delivery need Linux/container verification. Local tests execute the actual worker functions directly against committed PostgreSQL data.
+- CI is configured but has not run on GitHub. No push, PR, publication or deployment was performed.
+- Production HTTPS, operational alerts, independent backups/restore, staging upgrade/rollback and hosting/provider setup need real environment evidence.
+- Five-volunteer usability results and second-developer setup/signoff are absent and must not be invented.
 
-## Open decisions requiring team input
+## Next release steps
 
-- Hosting and managed database provider
-- Email provider and sender-domain access
-- Exact list-deletion behavior when tasks remain
-- Retention policy for account deletion, exports, and logs
-- Whether export artifacts require object storage
-- Team ownership and sprint capacity
-- Availability of five volunteer testers and a second-developer handoff reviewer
-
-## Current risks
-
-The approved scope is broad for a student team. Recurrence, reminders, secure authentication, imports, recovery rehearsals, accessibility, and performance evidence each require meaningful implementation and verification time. The release sequence in the implementation plan reduces risk without removing requirements.
-
-## Evidence not yet available
-
-No claims are made yet for completed implementation, passing tests, measured performance, usability outcomes, browser compatibility, deployment, rollback, backup, or restoration.
+Run the configured full cross-browser/container CI on a supported host, configure and verify SMTP, execute worker/broker restart tests, review production image/action pins and secrets, perform deployment and restore rehearsals, obtain the instructor rubric, and complete O2/O5 with actual volunteers/reviewer. These requirements remain traceable; none has been silently removed or marked complete.

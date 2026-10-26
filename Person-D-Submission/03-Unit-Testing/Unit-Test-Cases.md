@@ -1,0 +1,14 @@
+# Unit and component test cases
+
+Eight frontend tests passed in two files on October 25, 2026. API requests are mocked in component tests; these are isolated control tests, not database integration tests. U03 checks required/minlength attributes; it does not independently prove every browser validation path. See copied test source and original console output.
+
+| ID | Control | Input or setup | Expected result verified | Recorded result |
+|---|---|---|---|---|
+| U01 | Login | Email and password with leading/trailing spaces | Exact password submitted; login callback runs | Pass |
+| U02 | Login error | API rejects invalid credentials | Error displayed and retry enabled | Pass |
+| U03 | Registration boundary | Inspect registration controls | Email required; password minimum length attribute is 12 | Pass |
+| U04 | Verification token | Verification token in URL fragment | Fragment removed; token submitted to verification API | Pass |
+| U05 | Task controls | Title, date, high priority, in-progress status, tag, two checklist items | Correct request; reordered checklist and completed flag preserved | Pass |
+| U06 | Database error feedback | Task save rejects with Storage is unavailable | Alert shown, title retained, editor stays open | Pass |
+| U07 | Cancel and checklist delete | Add/remove checklist item; cancel editor | Item removed; close called; no API write | Pass |
+| U08 | Timezone boundary | 2026-10-26 01:00 UTC; New York and Tokyo | Dates are Oct 25 and Oct 26 respectively | Pass |

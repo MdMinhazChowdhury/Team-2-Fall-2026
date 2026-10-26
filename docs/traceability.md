@@ -58,3 +58,7 @@
 ## Evidence policy
 
 A requirement or objective remains Planned until linked evidence exists. The team will not substitute screenshots for automated test evidence where the requirement concerns correctness, security, transactions, or performance. User tests, benchmarks, deployments, and restore exercises must be dated and reproducible.
+
+## Current implementation evidence
+
+The planning matrix above is retained. Current source/test mappings, measured results and remaining qualifications are maintained in [verification.md](verification.md) and [progress.md](progress.md). No release objective is marked complete solely because implementation files now exist.

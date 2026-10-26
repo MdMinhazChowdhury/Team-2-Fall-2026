@@ -1,3 +1,3 @@
 # Infrastructure
 
-Deployment, same-origin reverse-proxy configuration, backup and restore scripts, health checks, and alert configuration belong here. Infrastructure implementation begins after architecture approval.
+Root `compose.yml` connects PostgreSQL, Redis, Mailpit, the migration job, API, worker, scheduler and Caddy/frontend. Dockerfiles and proxy configuration are here. Read `OPERATIONS.md` for startup, production prerequisites, rollback precautions, monitoring and backup/restore checks. Container/production verification remains pending; local native results are in `docs/verification.md`.

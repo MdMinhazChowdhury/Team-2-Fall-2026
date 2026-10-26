@@ -1,0 +1,13 @@
+
+> tasktrack@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 C:/Users/lloyd/Downloads/Team-2-Fall-2026
+
+
+ Test Files  2 passed (2)
+      Tests  8 passed (8)
+   Start at  20:52:23
+   Duration  4.53s (tests 59%, environment 30%, setup 7%, import 3%, transform 1%)
+

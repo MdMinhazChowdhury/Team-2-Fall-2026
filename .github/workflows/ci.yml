@@ -1,0 +1,70 @@
+name: Verify TaskTrack
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: tasktrack
+          POSTGRES_PASSWORD: tasktrack-test-only
+          POSTGRES_DB: tasktrack_test
+        ports: ['5432:5432']
+        options: --health-cmd "pg_isready -U tasktrack" --health-interval 5s --health-retries 10
+      redis:
+        image: redis:8.2-alpine
+        ports: ['6379:6379']
+    env:
+      TASKTRACK_TEST_DATABASE_URL: postgresql+psycopg://tasktrack:tasktrack-test-only@localhost:5432/tasktrack_test
+      TASKTRACK_DATABASE_URL: postgresql+psycopg://tasktrack:tasktrack-test-only@localhost:5432/tasktrack_e2e
+      TASKTRACK_E2E_DATABASE_URL: postgresql+psycopg://tasktrack:tasktrack-test-only@localhost:5432/tasktrack_e2e
+      TASKTRACK_PUBLIC_ORIGIN: http://127.0.0.1:5173
+      TASKTRACK_RATE_LIMIT: '500'
+      TASKTRACK_ENV: test
+      TASKTRACK_TEST_NOW: '2026-10-25T12:00:00Z'
+      TASKTRACK_PYTHON: python
+      PYTHONPATH: src/backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+          cache: pip
+          cache-dependency-path: requirements-dev.lock
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.15.0'
+          cache: npm
+      - run: pip install -r requirements-dev.lock
+      - run: npm ci
+      - run: ruff check src/backend tests
+      - run: ruff format --check src/backend tests
+      - run: mypy
+      - run: npm run lint && npm run format:check && npm run build && npm test
+      - run: pytest tests/backend tests/performance --junitxml=docs/evidence/backend-results.xml
+      - run: pip-audit -r requirements.lock && npm audit --audit-level=high
+      - name: Start isolated browser-test application
+        run: |
+          python -c "import psycopg,os; c=psycopg.connect(os.environ['TASKTRACK_TEST_DATABASE_URL'].replace('postgresql+psycopg:', 'postgresql:'), autocommit=True); c.execute('CREATE DATABASE tasktrack_e2e'); c.close()"
+          alembic upgrade head
+          uvicorn tasktrack.main:app --host 127.0.0.1 --port 8000 &
+          npm run dev -- --host 127.0.0.1 --port 5173 &
+          for i in $(seq 1 30); do curl --fail http://127.0.0.1:8000/api/health/ready && curl --fail http://127.0.0.1:5173 && break; sleep 1; done
+      - run: npx playwright install --with-deps chromium firefox chrome
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-evidence
+          path: |
+            docs/evidence
+            test-results
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
