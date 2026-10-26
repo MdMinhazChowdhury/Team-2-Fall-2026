@@ -1,6 +1,6 @@
 # Requirement verification index
 
-Local verification date: October 25, 2026 (America/New_York). Governing scope is `requirements.md` and the repository architecture; a separate instructor rubric was not supplied.
+Local verification date: October 25, 2026 (America/New_York). Governing product scope is `requirements.md` and the repository architecture. The later Person C update maps the supplied instructor Sprint 1 rubric in [person-c/ALIGNMENT.md](person-c/ALIGNMENT.md). Results below are the original application's evidence; the new update's separate evidence is linked there.
 
 ## Recorded results
 

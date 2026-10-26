@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-25",
+  "timezone": "America/New_York",
+  "python": "3.12.14",
+  "node": "24.22.1",
+  "postgresql": "18.6",
+  "database": "isolated local PostgreSQL; credentials excluded",
+  "base_revision": "34f253d48d5f6faf118f7a21ba564e14f47c8954",
+  "backend_and_unit_tests": 65,
+  "isolated_unit_tests": 23,
+  "new_api_regression_cases": 9,
+  "frontend_tests": 8,
+  "chrome_browser_scenarios": 3,
+  "firefox": "not rerun",
+  "docker_redis_celery_transport": "not verified"
+}

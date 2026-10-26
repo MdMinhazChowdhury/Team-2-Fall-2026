@@ -62,3 +62,5 @@ A requirement or objective remains Planned until linked evidence exists. The tea
 ## Current implementation evidence
 
 The planning matrix above is retained. Current source/test mappings, measured results and remaining qualifications are maintained in [verification.md](verification.md) and [progress.md](progress.md). No release objective is marked complete solely because implementation files now exist.
+
+The factory and filtering alignment for FR3/FR4/FR6/FR7/FR9/FR10/FR12/FR18, together with the Sprint 1 Person C rubric, is mapped in [person-c/ALIGNMENT.md](person-c/ALIGNMENT.md). Existing requirement IDs and API behavior are preserved.

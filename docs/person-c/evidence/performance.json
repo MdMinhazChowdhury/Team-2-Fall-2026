@@ -1,0 +1,14 @@
+{
+  "recorded_at": "2026-10-26T02:50:34.197772+00:00",
+  "transport": "in-process ASGI TestClient (includes API and PostgreSQL; excludes network/proxy)",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "concurrent_accounts": 10,
+  "tasks_per_account": 500,
+  "requests": 100,
+  "get_page_size": 25,
+  "median_seconds": 0.16929410000739153,
+  "p95_seconds": 0.24905790000048,
+  "max_seconds": 0.37351309999939986,
+  "target_seconds": 2,
+  "passed": true
+}

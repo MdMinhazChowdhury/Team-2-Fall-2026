@@ -9,6 +9,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from tasktrack.db import now
+from tasktrack.factories import TaskFactory
 from tasktrack.models import Activity, ChecklistItem, Tag, Task, TaskList, TaskTag
 from tasktrack.schemas import TaskInput, TaskUpdate
 
@@ -70,7 +71,14 @@ def details(db: Session, task: Task) -> dict:
     }
 
 
-def save_task(db: Session, account_id: str, data: TaskInput, task: Task | None = None) -> Task:
+def save_task(
+    db: Session,
+    account_id: str,
+    data: TaskInput,
+    task: Task | None = None,
+    *,
+    factory: TaskFactory | None = None,
+) -> Task:
     creating = task is None
     owned(db, TaskList, data.list_id, account_id, lock=True)
     tags = set(data.tag_ids)
@@ -95,13 +103,13 @@ def save_task(db: Session, account_id: str, data: TaskInput, task: Task | None =
             else "edited"
         )
         task.version += 1
+        for key in ("list_id", "title", "description", "due_date", "priority", "status"):
+            setattr(task, key, getattr(data, key))
     else:
-        task = Task(account_id=account_id)
+        task = (factory or TaskFactory()).create(account_id, data)
         db.add(task)
         kind = "created"
         fields = []
-    for key in ("list_id", "title", "description", "due_date", "priority", "status"):
-        setattr(task, key, getattr(data, key))
     task.updated_at = now()
     task.completed_at = (task.completed_at or now()) if data.status == "COMPLETED" else None
     db.flush()

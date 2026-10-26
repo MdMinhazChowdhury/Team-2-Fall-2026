@@ -7,7 +7,8 @@ from sqlalchemy import case, func, select
 
 from tasktrack import schemas as s
 from tasktrack.db import now
-from tasktrack.models import Activity, Tag, Task, TaskList, TaskTag
+from tasktrack.filters import TaskFilter
+from tasktrack.models import Activity, Tag, Task, TaskList
 from tasktrack.security import DB, CurrentAccount, csrf
 from tasktrack.services import details, event, owned, save_task, trash, version
 
@@ -75,48 +76,23 @@ def tasks(
 ):
     if due_from and due_through and due_from > due_through:
         raise HTTPException(422, "Start date must not follow end date")
-    query = select(Task).where(Task.account_id == account.id)
-    query = (
-        query.where(Task.deleted_at.is_not(None), Task.purge_after > now())
-        if trashed
-        else query.where(Task.deleted_at.is_(None))
-    )
     if list_id:
         owned(db, TaskList, list_id, account.id)
-        query = query.where(Task.list_id == list_id)
-    if status:
-        query = query.where(Task.status == status)
-    if priority:
-        query = query.where(Task.priority == priority)
-    if q:
-        query = query.where(
-            Task.title.ilike(
-                "%" + q.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%",
-                escape="\\",
-            )
-        )
     if tag_id:
         owned(db, Tag, tag_id, account.id)
-        query = query.where(
-            Task.id.in_(
-                select(TaskTag.task_id).where(
-                    TaskTag.account_id == account.id, TaskTag.tag_id == tag_id
-                )
-            )
-        )
-    today = now().astimezone(ZoneInfo(account.timezone)).date()
-    if due == "today":
-        query = query.where(Task.due_date == today)
-    elif due == "upcoming":
-        query = query.where(Task.due_date > today)
-    elif due == "overdue":
-        query = query.where(Task.due_date < today, Task.status != "COMPLETED")
-    elif due == "undated":
-        query = query.where(Task.due_date.is_(None))
-    if due_from:
-        query = query.where(Task.due_date >= due_from)
-    if due_through:
-        query = query.where(Task.due_date <= due_through)
+    clock = now()
+    today = clock.astimezone(ZoneInfo(account.timezone)).date()
+    query = TaskFilter(
+        q=q,
+        list_id=list_id,
+        status=status,
+        priority=priority,
+        tag_id=tag_id,
+        due=due,
+        due_from=due_from,
+        due_through=due_through,
+        trashed=trashed,
+    ).query(account.id, today, clock)
     total = db.scalar(select(func.count()).select_from(query.subquery()))
     ordering: Any = {
         "due_date": Task.due_date.asc().nulls_last(),

@@ -14,7 +14,7 @@ See `verification.md` and `evidence/` for exact test outputs. The recorded local
 
 ## Incomplete release evidence
 
-- Separate instructor rubric/document has not been provided. Assignment compliance cannot be certified from project planning files alone.
+- The supplied Sprint 1 logic-developer rubric is mapped in `person-c/ALIGNMENT.md`. Communication evidence and report submission still require the students' original records; code/tests alone do not establish full assignment compliance.
 - Firefox failed to finish launching on this host. No Firefox pass is claimed.
 - Docker was unavailable; Compose, Redis broker/worker transport, worker process restart behavior and real SMTP delivery need Linux/container verification. Local tests execute the actual worker functions directly against committed PostgreSQL data.
 - CI is configured but has not run on GitHub. No push, PR, publication or deployment was performed.
@@ -23,4 +23,8 @@ See `verification.md` and `evidence/` for exact test outputs. The recorded local
 
 ## Next release steps
 
-Run the configured full cross-browser/container CI on a supported host, configure and verify SMTP, execute worker/broker restart tests, review production image/action pins and secrets, perform deployment and restore rehearsals, obtain the instructor rubric, and complete O2/O5 with actual volunteers/reviewer. These requirements remain traceable; none has been silently removed or marked complete.
+Run the configured full cross-browser/container CI on a supported host, configure and verify SMTP, execute worker/broker restart tests, review production image/action pins and secrets, perform deployment and restore rehearsals, finish the submission's communication attachments, and complete O2/O5 with actual volunteers/reviewer. These requirements remain traceable; none has been silently removed or marked complete.
+
+## Person C task-core alignment
+
+The current local update adapts task creation and filtering to the existing Python backend. It adds a reusable TaskFactory and TaskFilter, wires task creation/imports/recurrence through the factory, and adds isolated unit tests plus PostgreSQL regression tests. It does not import the separate Java account/database implementation or claim ownership of the pre-existing web application. See `person-c/ALIGNMENT.md` and its evidence directory for this update's results.

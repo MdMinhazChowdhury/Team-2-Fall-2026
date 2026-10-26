@@ -46,6 +46,8 @@ The `src/backend/tasktrack` package will contain:
 
 Routes remain thin. Business rules and transactions belong in services. Persistence details do not leak into frontend contracts.
 
+Task construction is centralized in `factories.TaskFactory`. `services.save_task` checks list/tag ownership before calling the factory and persists checklist/tag/activity records in the request transaction. Imports reuse that service. Recurring instances use the factory's recurring policy, retaining the rule/occurrence uniqueness key and resetting status to To Do. `filters.TaskFilter` builds the owned task query; the task API authorizes referenced lists/tags and applies existing sorting and pagination. These classes adapt the earlier task-core design to this backend without adding another application or language bridge.
+
 ## Authentication and sessions
 
 - Authentication is server-managed rather than browser-stored bearer tokens.

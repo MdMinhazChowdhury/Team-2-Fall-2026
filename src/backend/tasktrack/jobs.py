@@ -10,6 +10,7 @@ from sqlalchemy import delete, select
 from tasktrack.adapters import queue_mail, send_mail
 from tasktrack.config import settings
 from tasktrack.db import SessionLocal, now
+from tasktrack.factories import TaskFactory
 from tasktrack.models import (
     Account,
     ChecklistItem,
@@ -72,17 +73,7 @@ def run_due(db, clock=None):
                 )
             )
             if not existing:
-                task = Task(
-                    account_id=source.account_id,
-                    list_id=source.list_id,
-                    title=source.title,
-                    description=source.description,
-                    due_date=rule.next_date,
-                    priority=source.priority,
-                    status="TODO",
-                    recurrence_id=rule.id,
-                    occurrence=rule.next_date,
-                )
+                task = TaskFactory().recurring(source, rule.id, rule.next_date)
                 db.add(task)
                 db.flush()
                 for item in db.scalars(

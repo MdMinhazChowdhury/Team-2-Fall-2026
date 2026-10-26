@@ -1,6 +1,6 @@
 # TaskTrack Task Management Application
 
-TaskTrack implements the repository's React/TypeScript/FastAPI/PostgreSQL design. Application code lives under `src`, automated tests under `tests`, documentation/evidence under `docs`, and deployment files under `infra` with the root Compose entry point. This is the web implementation; the earlier Java/Swing/SQLite project is not duplicated here.
+TaskTrack implements the repository's React/TypeScript/FastAPI/PostgreSQL design. Application code lives under `src`, automated tests under `tests`, documentation/evidence under `docs`, and deployment files under `infra` with the root Compose entry point. This is the web implementation; the earlier Java/JavaFX/SQLite project is not duplicated here.
 
 ## Features
 
@@ -11,7 +11,9 @@ TaskTrack implements the repository's React/TypeScript/FastAPI/PostgreSQL design
 - PostgreSQL-backed recurrence/reminder schedules, unique occurrence/delivery keys, in-app notifications, optional email, encrypted email outbox, bounded retries and Celery/Redis scheduling.
 - Background export jobs with account-scoped downloads, plus versioned import validation, preview, limits and transactional application.
 
-The implementation and local verification are recorded in [progress](docs/progress.md), [requirement evidence](docs/verification.md), and [Person D report](docs/person-d/REPORT.md). These records explicitly distinguish local checks from outstanding release checks. The instructor's separate assignment rubric was not supplied; compliance with that rubric has not been certified.
+The implementation and local verification are recorded in [progress](docs/progress.md), [requirement evidence](docs/verification.md), and [Person D report](docs/person-d/REPORT.md). The [Person C alignment notes](docs/person-c/ALIGNMENT.md) map the current task core to the supplied Sprint 1 logic-developer rubric and distinguish this update from the inherited application. These records separate verified local checks from outstanding release and submission requirements.
+
+Task creation uses `TaskFactory` in the existing backend for API creation, imports, and recurring instances. `TaskFilter` builds the account-scoped query shared with the existing task endpoint. The UI contract remains UUID IDs, `list_id`, `TODO`, and 30-day Trash; there is no second Java service to connect.
 
 ## Start with Docker Compose
 
@@ -48,7 +50,7 @@ Automated checks:
 
 ```powershell
 $env:TASKTRACK_TEST_DATABASE_URL='postgresql+psycopg://USER:PASSWORD@localhost:5432/tasktrack_test'
-.\.venv\Scripts\pytest.exe tests/backend tests/performance --junitxml=docs/evidence/backend-results.xml
+.\.venv\Scripts\pytest.exe tests/unit tests/backend tests/performance --junitxml=docs/evidence/backend-results.xml
 .\.venv\Scripts\ruff.exe check src/backend tests
 .\.venv\Scripts\ruff.exe format --check src/backend tests
 .\.venv\Scripts\mypy.exe
@@ -60,7 +62,9 @@ npm.cmd test
 
 Tests require a disposable PostgreSQL database where the test user may create/drop isolated schemas; they never fall back to SQLite. Browser tests require a separate database named `tasktrack_e2e`, migration upgrade, API and Vite servers, and installed Playwright browsers. Set `TASKTRACK_E2E_DATABASE_URL`, `TASKTRACK_ENV=test`, `TASKTRACK_TEST_NOW=2026-10-25T12:00:00Z`, and matching `TASKTRACK_PUBLIC_ORIGIN` in the API process; run `npx playwright install chromium firefox` and `npm run test:e2e`. On Linux set `TASKTRACK_PYTHON=python` after activating the virtual environment. A fixed clock is refused outside test mode. Browser fixtures read verification messages and process export jobs directly in their isolated PostgreSQL database, allowing native UI testing without pretending a Redis worker was tested.
 
-The backend dependency graph is pinned in `requirements.lock`, development tools in `requirements-dev.lock`, and npm dependencies in `package-lock.json`. CI is configured in `.github/workflows/ci.yml` but no GitHub push or remote CI run has been performed.
+The backend dependency graph is pinned in `requirements.lock`, development tools in `requirements-dev.lock`, and npm dependencies in `package-lock.json`. CI is configured in `.github/workflows/ci.yml`, including the isolated core tests. Local success does not establish a passing remote CI run.
+
+To run only the isolated factory/service tests without PostgreSQL, use `.\.venv\Scripts\pytest.exe --confcutdir=tests/unit tests/unit`. The `--confcutdir` option excludes the database-specific parent fixtures. The same tests are also included in the full PostgreSQL suite and CI. `.gitattributes` preserves LF text files so the format checks behave consistently on Windows and Linux.
 
 ## Behavior and limits
 
@@ -72,4 +76,4 @@ Exports contain active lists/tasks/checklists/tags, excluding schedules, reminde
 
 ## Release checks still required
 
-Firefox launch timed out on this Windows host. Docker/Redis/Celery transport and restart integration, live provider email, production HTTPS/alerts, staging deployment, backup restoration, five-volunteer usability study and second-developer setup/signoff remain unverified. See the evidence matrix rather than treating source presence as release approval. No publisher or contributor attribution was added, and nothing was pushed to GitHub.
+Firefox launch timed out in the inherited verification record. Docker/Redis/Celery transport and restart integration, live provider email, production HTTPS/alerts, staging deployment, backup restoration, five-volunteer usability study and second-developer setup/signoff remain unverified. See the evidence matrix rather than treating source presence as release approval.

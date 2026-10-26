@@ -1,0 +1,11 @@
+
+Running 3 tests using 1 worker
+
+(node:44724) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [chrome] › tests\e2e\workflows.spec.ts:51:1 › register, verify, create, edit, filter, complete, reload, cancel delete and restore (4.4s)
+  ok 2 [chrome] › tests\e2e\workflows.spec.ts:161:1 › responsive controls and automated accessibility at 360, 768 and 1920 pixels (5.8s)
+
+  ok 3 [chrome] › tests\e2e\workflows.spec.ts:200:1 › tags, bulk actions, calendar, schedules, reports, preferences and import/export (6.8s)
+
+  3 passed (18.1s)

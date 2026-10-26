@@ -1,0 +1,11 @@
+Python lint: PASS (ruff check src/backend tests)
+Python format: PASS (ruff format --check src/backend tests)
+Python types: PASS (mypy; 15 source files)
+Frontend lint: PASS (npm run lint)
+Frontend format: PASS (npm run format:check)
+Frontend production build: PASS (npm run build)
+Frontend tests: PASS (8 tests)
+Chrome browser scenarios: PASS (3 scenarios)
+Unit/backend/PostgreSQL/performance: PASS (65 cases)
+Isolated unit-only run without PostgreSQL: PASS (23 cases)
+No remote CI, deployment, Firefox, or container/worker transport result is claimed.

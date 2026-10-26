@@ -16,7 +16,7 @@ dependencies = {file = ["requirements.txt"]}
 where = ["src/backend"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests/backend"]
+testpaths = ["tests/unit", "tests/backend"]
 pythonpath = ["src/backend"]
 addopts = "-ra"
 

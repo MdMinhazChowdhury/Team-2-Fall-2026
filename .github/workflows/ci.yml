@@ -44,7 +44,7 @@ jobs:
       - run: ruff format --check src/backend tests
       - run: mypy
       - run: npm run lint && npm run format:check && npm run build && npm test
-      - run: pytest tests/backend tests/performance --junitxml=docs/evidence/backend-results.xml
+      - run: pytest tests/unit tests/backend tests/performance --junitxml=docs/evidence/backend-results.xml
       - run: pip-audit -r requirements.lock && npm audit --audit-level=high
       - name: Start isolated browser-test application
         run: |
