@@ -12,6 +12,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from starlette.exceptions import HTTPException
 
+from tasktrack.admin_api import router as admin
 from tasktrack.api import router as accounts
 from tasktrack.config import settings
 from tasktrack.db import SessionLocal
@@ -26,6 +27,7 @@ app = FastAPI(
     title="TaskTrack API", version="0.1.0", docs_url=None if settings().secure else "/api/docs"
 )
 app.include_router(accounts)
+app.include_router(admin)
 app.include_router(tasks)
 app.include_router(extras)
 

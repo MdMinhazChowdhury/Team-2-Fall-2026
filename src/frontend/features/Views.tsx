@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { request, type Account, type Task, type TaskPage } from '../api/client';
 import { Field } from '../components/Dialog';
@@ -218,6 +218,158 @@ export function Notifications({ open }: { open: (task: Task) => void }) {
           </span>
         </article>
       ))}
+    </section>
+  );
+}
+
+export function AdminAccounts({
+  confirm,
+}: {
+  confirm: (message: string, action: () => Promise<void>) => void;
+}) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'USER' | 'ADMIN'>('USER');
+  const [message, setMessage] = useState('');
+  const [pending, setPending] = useState(false);
+  const accounts = useQuery({
+    queryKey: ['admin-accounts'],
+    queryFn: () => request<Account[]>('/admin/accounts'),
+  });
+
+  async function create(event: FormEvent) {
+    event.preventDefault();
+    setPending(true);
+    setMessage('');
+    try {
+      await request('/admin/accounts', 'POST', { email, password, role });
+      setEmail('');
+      setPassword('');
+      setRole('USER');
+      setMessage('Account created.');
+      await accounts.refetch();
+    } catch (error) {
+      setMessage((error as Error).message);
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function setActive(account: Account, active: boolean) {
+    setPending(true);
+    setMessage('');
+    try {
+      await request('/admin/accounts/' + account.id + '/status', 'PATCH', {
+        active,
+      });
+      setMessage(active ? 'Account enabled.' : 'Account disabled.');
+      await accounts.refetch();
+    } catch (error) {
+      setMessage((error as Error).message);
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function remove(account: Account) {
+    setPending(true);
+    setMessage('');
+    try {
+      await request('/admin/accounts/' + account.id, 'DELETE', {
+        confirmed: true,
+      });
+      setMessage('Account deleted.');
+      await accounts.refetch();
+    } catch (error) {
+      setMessage((error as Error).message);
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <section className="settings-grid">
+      <div className="panel">
+        <h2>Create account</h2>
+        <p>Create a verified user or administrator account.</p>
+        <form onSubmit={create}>
+          <fieldset disabled={pending}>
+            <Field label="Email">
+              <input
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+              />
+            </Field>
+            <Field label="Temporary password">
+              <input
+                type="password"
+                autoComplete="new-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                minLength={12}
+                maxLength={128}
+                required
+              />
+            </Field>
+            <Field label="Role">
+              <select
+                value={role}
+                onChange={(event) =>
+                  setRole(event.target.value as 'USER' | 'ADMIN')
+                }
+              >
+                <option value="USER">User</option>
+                <option value="ADMIN">Administrator</option>
+              </select>
+            </Field>
+            <button className="primary">Create account</button>
+          </fieldset>
+        </form>
+      </div>
+      <div className="panel">
+        <h2>Accounts</h2>
+        {accounts.isPending && <p>Loading accounts…</p>}
+        {accounts.error && <p role="alert">{accounts.error.message}</p>}
+        {accounts.data?.map((account) => (
+          <div className="session-row" key={account.id}>
+            <p>
+              {account.email}
+              <br />
+              <small>
+                {account.role === 'ADMIN' ? 'Administrator' : 'User'} ·{' '}
+                {account.active ? 'Active' : 'Disabled'}
+              </small>
+            </p>
+            <div>
+              <button
+                disabled={pending}
+                onClick={() => setActive(account, !account.active)}
+              >
+                {account.active ? 'Disable' : 'Enable'}
+              </button>{' '}
+              <button
+                className="danger"
+                disabled={pending}
+                onClick={() =>
+                  confirm('Permanently delete ' + account.email + '?', () =>
+                    remove(account),
+                  )
+                }
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      {message && (
+        <p role="status" className="notice">
+          {message}
+        </p>
+      )}
     </section>
   );
 }

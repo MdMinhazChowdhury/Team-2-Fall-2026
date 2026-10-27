@@ -14,6 +14,7 @@ Title = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, ma
 Password = Annotated[str, Field(min_length=12, max_length=128)]
 Status = Literal["TODO", "IN_PROGRESS", "COMPLETED"]
 Priority = Literal["LOW", "MEDIUM", "HIGH"]
+AccountRole = Literal["USER", "ADMIN"]
 
 
 class Credentials(Input):
@@ -91,6 +92,18 @@ class PasswordChange(Input):
 
 class AccountDeletion(Input):
     current_password: str = Field(max_length=128)
+    confirmed: Literal[True]
+
+
+class AdminAccountCreate(Registration):
+    role: AccountRole = "USER"
+
+
+class AdminAccountStatus(Input):
+    active: bool
+
+
+class AdminAccountDeletion(Input):
     confirmed: Literal[True]
 
 

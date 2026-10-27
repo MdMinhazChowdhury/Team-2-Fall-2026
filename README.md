@@ -1,19 +1,20 @@
 # TaskTrack Task Management Application
 
-TaskTrack implements the repository's React/TypeScript/FastAPI/PostgreSQL design. Application code lives under `src`, automated tests under `tests`, documentation/evidence under `docs`, and deployment files under `infra` with the root Compose entry point. This is the web implementation; the earlier Java/JavaFX/SQLite project is not duplicated here.
+TaskTrack implements the repository's React/TypeScript/FastAPI/PostgreSQL design. Application code lives under `src`, automated tests under `tests`, documentation/evidence under `docs`, and deployment files under `infra` with the root Compose entry point. This is the web implementation; useful account and task behaviors from the earlier Java/JavaFX/SQLite work are adapted to this architecture rather than duplicated as a second application.
 
 ## Features
 
 - Registration, email verification/recovery, Argon2id passwords, opaque hashed sessions, CSRF protection, logout, session revocation, password changes and account deletion.
+- Role-based account administration for creating, listing, enabling, disabling and deleting accounts, with session revocation and last-admin safeguards.
 - Private lists and tasks with descriptions, dates, priorities, status/reopening, checklists, tags, combined filters, sorting, pagination and bulk actions.
 - Confirmed deletion, 30-day Trash recovery, permanent deletion and optimistic task/list versions.
 - Dashboard, monthly/weekly calendar, completion-event reports, activity history and timezone/preferences settings.
 - PostgreSQL-backed recurrence/reminder schedules, unique occurrence/delivery keys, in-app notifications, optional email, encrypted email outbox, bounded retries and Celery/Redis scheduling.
 - Background export jobs with account-scoped downloads, plus versioned import validation, preview, limits and transactional application.
 
-The implementation and local verification are recorded in [progress](docs/progress.md), [requirement evidence](docs/verification.md), and [Person D report](docs/person-d/REPORT.md). The [Person C alignment notes](docs/person-c/ALIGNMENT.md) map the current task core to the supplied Sprint 1 logic-developer rubric and distinguish this update from the inherited application. These records separate verified local checks from outstanding release and submission requirements.
+The implementation and local verification are recorded in [progress](docs/progress.md), [requirement evidence](docs/verification.md), [Person B account alignment](docs/person-b/ALIGNMENT.md), and [Person D report](docs/person-d/REPORT.md). The [Person C alignment notes](docs/person-c/ALIGNMENT.md) map the current task core to the supplied Sprint 1 logic-developer rubric and distinguish this update from the inherited application. These records separate verified local checks from outstanding release and submission requirements.
 
-Task creation uses `TaskFactory` in the existing backend for API creation, imports, and recurring instances. `TaskFilter` builds the account-scoped query shared with the existing task endpoint. The UI contract remains UUID IDs, `list_id`, `TODO`, and 30-day Trash; there is no second Java service to connect.
+Account creation uses `AccountFactory` for both public registration and administrator-created accounts. Administrator operations are isolated in an account service and account-metadata API; they never expose another user's task data. Task creation uses `TaskFactory` in the existing backend for API creation, imports, and recurring instances. `TaskFilter` builds the account-scoped query shared with the existing task endpoint. The UI contract remains UUID IDs, `list_id`, `TODO`, and 30-day Trash; there is no second Java service to connect.
 
 ## Start with Docker Compose
 
@@ -26,6 +27,10 @@ Requirements: Docker with Linux containers and Compose. This workstation did not
 5. Open http://localhost:8080. Register, then open the verification email in development Mailpit at http://localhost:8025. The worker and scheduler must be running to deliver mail, recurrence, reminders and exports.
 
 The migration job runs before the API. PostgreSQL and Redis use named volumes. The supplied stack is local HTTP development configuration. Production prerequisites and safe upgrade/rollback/backup procedures are in [operations](infra/OPERATIONS.md). Do not use a destructive migration downgrade against real data.
+
+## First administrator
+
+Register and verify an account, configure the backend environment, then run `python -m tasktrack.admin_cli promote admin@example.com` with `PYTHONPATH=src/backend`. Log out and back in to refresh the account metadata and open the Administration screen.
 
 ## Native development and tests
 

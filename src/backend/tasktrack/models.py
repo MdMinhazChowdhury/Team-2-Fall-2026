@@ -30,8 +30,11 @@ class Identity:
 
 class Account(Identity, Base):
     __tablename__ = "accounts"
+    __table_args__ = (CheckConstraint("role IN ('USER','ADMIN')"),)
     email: Mapped[str] = mapped_column(String(254), unique=True)
     password_hash: Mapped[str] = mapped_column(Text)
+    role: Mapped[str] = mapped_column(String(16), default="USER")
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
     verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     timezone: Mapped[str] = mapped_column(String(80), default="UTC")
     email_reminders: Mapped[bool] = mapped_column(Boolean, default=False)

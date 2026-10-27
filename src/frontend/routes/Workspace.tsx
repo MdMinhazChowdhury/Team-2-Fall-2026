@@ -7,6 +7,7 @@ import {
   ListTodo,
   Bell,
   Settings2,
+  Users,
   ArrowDownToLine,
   Trash2,
   Plus,
@@ -26,6 +27,7 @@ import {
 } from '../api/client';
 import { TaskEditor } from '../features/TaskEditor';
 import {
+  AdminAccounts,
   CalendarView,
   Notifications,
   Portability,
@@ -40,6 +42,7 @@ type View =
   | 'reports'
   | 'notifications'
   | 'settings'
+  | 'admin'
   | 'data'
   | 'trash';
 export function Workspace({
@@ -155,6 +158,9 @@ export function Workspace({
     { value: 'trash', label: 'Trash', icon: Trash2 },
     { value: 'data', label: 'Import & export', icon: ArrowDownToLine },
     { value: 'settings', label: 'Settings', icon: Settings2 },
+    ...(account.role === 'ADMIN'
+      ? [{ value: 'admin' as const, label: 'Administration', icon: Users }]
+      : []),
   ] as const;
   const activeError =
     lists.error ||
@@ -765,6 +771,7 @@ export function Workspace({
           <Notifications open={(task) => setEditor({ task })} />
         )}
         {view === 'data' && <Portability changed={changed} />}
+        {view === 'admin' && <AdminAccounts confirm={confirm} />}
         {view === 'settings' && (
           <Settings
             account={account}

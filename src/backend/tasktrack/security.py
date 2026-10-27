@@ -85,12 +85,21 @@ CurrentSession = Annotated[LoginSession, Depends(current_session)]
 
 def current_account(session: CurrentSession, db: DB) -> Account:
     account = db.get(Account, session.account_id)
-    if not account or not account.verified_at:
-        raise HTTPException(401, "Log in with a verified account")
+    if not account or not account.verified_at or not account.active:
+        raise HTTPException(401, "Log in with a verified, active account")
     return account
 
 
 CurrentAccount = Annotated[Account, Depends(current_account)]
+
+
+def current_admin(account: CurrentAccount) -> Account:
+    if account.role != "ADMIN":
+        raise HTTPException(403, "Administrator access required")
+    return account
+
+
+CurrentAdmin = Annotated[Account, Depends(current_admin)]
 
 
 def new_session(db: Session, account: Account, request: Request, response: Response) -> None:

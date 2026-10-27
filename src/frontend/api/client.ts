@@ -52,6 +52,8 @@ export async function request<T>(
 export type Account = {
   id: string;
   email: string;
+  role: 'USER' | 'ADMIN';
+  active: boolean;
   timezone: string;
   email_reminders: boolean;
 };

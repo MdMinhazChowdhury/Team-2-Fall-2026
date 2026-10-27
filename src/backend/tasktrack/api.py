@@ -5,9 +5,11 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy import delete, select
 
 from tasktrack import schemas as s
+from tasktrack.account_services import account_data
 from tasktrack.adapters import queue_mail
 from tasktrack.config import settings
 from tasktrack.db import now
+from tasktrack.factories import AccountFactory
 from tasktrack.models import Account, LoginSession, Token
 from tasktrack.security import (
     DB,
@@ -23,15 +25,6 @@ from tasktrack.security import (
 )
 
 router = APIRouter(prefix="/api", dependencies=[Depends(csrf)])
-
-
-def account_data(account: Account):
-    return {
-        "id": account.id,
-        "email": account.email,
-        "timezone": account.timezone,
-        "email_reminders": account.email_reminders,
-    }
 
 
 def queue_token(db, account, purpose):
@@ -77,7 +70,7 @@ def register(data: s.Registration, db: DB):
     email = str(data.email).casefold()
     account = db.scalar(select(Account).where(Account.email == email))
     if not account:
-        account = Account(email=email, password_hash=hasher.hash(data.password))
+        account = AccountFactory().create(email, hasher.hash(data.password))
         db.add(account)
         db.flush()
         queue_token(db, account, "verify")
@@ -107,6 +100,8 @@ def login(data: s.Credentials, request: Request, response: Response, db: DB):
     correct = check_password(data.password, account.password_hash if account else dummy_hash)
     if not account or not correct:
         raise HTTPException(401, "Invalid email or password")
+    if not account.active:
+        raise HTTPException(403, "Account is disabled")
     if not account.verified_at:
         raise HTTPException(403, "Verify your email before logging in")
     if hasher.check_needs_rehash(account.password_hash):

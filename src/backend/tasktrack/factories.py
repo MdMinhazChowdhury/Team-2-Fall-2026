@@ -1,11 +1,43 @@
-"""Task construction policies shared by API writes, imports, and recurrence."""
+"""Construction policies shared by account and task workflows."""
 
-from datetime import date
+from datetime import date, datetime
 from uuid import UUID, uuid4
 
 from tasktrack.db import now
-from tasktrack.models import Task
+from tasktrack.models import Account, Task
 from tasktrack.schemas import TaskInput
+
+
+class AccountFactory:
+    """Create validated, unsaved accounts for registration and administration."""
+
+    roles = frozenset({"USER", "ADMIN"})
+
+    def create(
+        self,
+        email: str,
+        password_hash: str,
+        role: str = "USER",
+        *,
+        verified_at: datetime | None = None,
+    ) -> Account:
+        normalized_email = email.strip().casefold()
+        normalized_role = role.strip().upper() if role else ""
+        if not normalized_email:
+            raise ValueError("Email is required")
+        if not password_hash:
+            raise ValueError("Password hash is required")
+        if normalized_role not in self.roles:
+            raise ValueError(f"Unknown account role: {role}")
+        return Account(
+            id=str(uuid4()),
+            email=normalized_email,
+            password_hash=password_hash,
+            role=normalized_role,
+            active=True,
+            verified_at=verified_at,
+            created_at=now(),
+        )
 
 
 class TaskFactory:
