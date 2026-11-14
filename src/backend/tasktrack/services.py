@@ -37,38 +37,50 @@ def event(db: Session, task: Task, kind: str, fields: list[str] | None = None):
     db.add(Activity(account_id=task.account_id, task_id=task.id, event=kind, fields=fields or []))
 
 
+def details_many(db: Session, account_id: str, tasks: list[Task]) -> list[dict]:
+    """Load task details with two child queries regardless of page length."""
+    if not tasks:
+        return []
+    if any(task.account_id != account_id for task in tasks):
+        raise ValueError("Task details must belong to the same account")
+    task_ids = [task.id for task in tasks]
+    checklists: dict[str, list[dict]] = {task_id: [] for task_id in task_ids}
+    tag_ids: dict[str, list[str]] = {task_id: [] for task_id in task_ids}
+    for item in db.scalars(
+        select(ChecklistItem)
+        .where(ChecklistItem.account_id == account_id, ChecklistItem.task_id.in_(task_ids))
+        .order_by(ChecklistItem.task_id, ChecklistItem.position, ChecklistItem.id)
+    ):
+        checklists[item.task_id].append({"text": item.text, "completed": item.completed})
+    for task_id, tag_id in db.execute(
+        select(TaskTag.task_id, TaskTag.tag_id)
+        .where(TaskTag.account_id == account_id, TaskTag.task_id.in_(task_ids))
+        .order_by(TaskTag.task_id, TaskTag.tag_id)
+    ):
+        tag_ids[task_id].append(tag_id)
+    return [
+        {
+            "id": task.id,
+            "list_id": task.list_id,
+            "title": task.title,
+            "description": task.description,
+            "due_date": task.due_date,
+            "status": task.status,
+            "priority": task.priority,
+            "version": task.version,
+            "created_at": task.created_at,
+            "completed_at": task.completed_at,
+            "deleted_at": task.deleted_at,
+            "purge_after": task.purge_after,
+            "checklist": checklists[task.id],
+            "tag_ids": tag_ids[task.id],
+        }
+        for task in tasks
+    ]
+
+
 def details(db: Session, task: Task) -> dict:
-    return {
-        "id": task.id,
-        "list_id": task.list_id,
-        "title": task.title,
-        "description": task.description,
-        "due_date": task.due_date,
-        "status": task.status,
-        "priority": task.priority,
-        "version": task.version,
-        "created_at": task.created_at,
-        "completed_at": task.completed_at,
-        "deleted_at": task.deleted_at,
-        "purge_after": task.purge_after,
-        "checklist": [
-            {"text": item.text, "completed": item.completed}
-            for item in db.scalars(
-                select(ChecklistItem)
-                .where(
-                    ChecklistItem.task_id == task.id, ChecklistItem.account_id == task.account_id
-                )
-                .order_by(ChecklistItem.position)
-            )
-        ],
-        "tag_ids": list(
-            db.scalars(
-                select(TaskTag.tag_id).where(
-                    TaskTag.task_id == task.id, TaskTag.account_id == task.account_id
-                )
-            )
-        ),
-    }
+    return details_many(db, task.account_id, [task])[0]
 
 
 def save_task(
@@ -162,8 +174,7 @@ def export_snapshot(db: Session, account_id: str) -> dict:
         "tags": [{"key": tag.id, "name": tag.name} for tag in tags],
         "tasks": [],
     }
-    for task in tasks:
-        value = details(db, task)
+    for value in details_many(db, account_id, list(tasks)):
         result["tasks"].append({key: value[key] for key in TaskInput.model_fields})
     if (
         len(json.dumps(jsonable_encoder(result), indent=2, ensure_ascii=False).encode("utf8"))

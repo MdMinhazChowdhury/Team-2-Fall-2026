@@ -10,7 +10,7 @@ from tasktrack.db import now
 from tasktrack.filters import TaskFilter
 from tasktrack.models import Activity, Tag, Task, TaskList
 from tasktrack.security import DB, CurrentAccount, csrf
-from tasktrack.services import details, event, owned, save_task, trash, version
+from tasktrack.services import details, details_many, event, owned, save_task, trash, version
 
 router = APIRouter(prefix="/api", dependencies=[Depends(csrf)])
 
@@ -103,7 +103,7 @@ def tasks(
         query.order_by(ordering, Task.id).offset((page - 1) * page_size).limit(page_size)
     ).all()
     return {
-        "items": [details(db, row) for row in rows],
+        "items": details_many(db, account.id, list(rows)),
         "total": total,
         "page": page,
         "page_size": page_size,
