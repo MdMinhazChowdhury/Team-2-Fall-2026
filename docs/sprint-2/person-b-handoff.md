@@ -18,7 +18,10 @@ The two regression tests for this defect fail on the previous code (400 on every
 | --- | --- | --- | --- |
 | Current-password checks on change-password and delete-account were not rate limited | Person B | Fixed | `test_current_password_guessing_is_rate_limited` (2 cases): 429 by the sixth attempt with a limit of 5 |
 | Sprint 1 Person B documentation and admin-role doc updates missing from the repository (the docs upload of Oct 26 did not complete) | Person B | Fixed | `docs/person-b/`, `docs/architecture.md`, `docs/data-model.md`, `docs/progress.md` and the Person C cross-reference restored |
+| Dependency scan (`pip-audit`, CI) failed on sprint-2: dnspython 2.9.0 (CVE-2026-128089) and opentelemetry-api 1.45.1 (CVE-2026-126360) | Person B | Fixed | Locked to dnspython 2.9.2 and opentelemetry-api 1.45.2 in both lock files; `pip-audit -r requirements.lock` reports no known vulnerabilities, `npm audit --audit-level=high` passes, all 115 tests pass |
 | `docs/requirements.md` (FR1–FR20) does not list the administrator role that the code now implements | Person A (requirements owner) | Deferred | Team decision needed on adding an administrator requirement |
+
+**Defect found and fixed: vulnerable dependencies.** The CI dependency scan failed on sprint-2 (including the Person C Sprint 2 commit) because two locked Python packages had published vulnerabilities. Both were updated to their fixed patch releases in `requirements.lock` and `requirements-dev.lock`. No code changes were needed.
 
 ## Security tests (tests/backend/test_person_b_security.py, real PostgreSQL)
 
@@ -58,6 +61,7 @@ The two regression tests for this defect fail on the previous code (400 on every
 | --- | --- |
 | All Python tests: Sprint 1 unit, API, authorization, database, migrations, workload, Person C Sprint 2, and these 32 new cases | 115 passed, 0 failed, 0 skipped |
 | Ruff lint, Ruff format, mypy | Passed |
+| Dependency audit: `pip-audit -r requirements.lock`, `npm audit --audit-level=high` | No known vulnerabilities after the update |
 | Frontend | Not rerun here; no frontend files changed |
 
 Run on local PostgreSQL 16 with Python 3.13 on Linux, in-process ASGI client (no browser, network or proxy). Reproduce with a disposable PostgreSQL database in `TASKTRACK_TEST_DATABASE_URL` and run `pytest tests/unit tests/backend tests/performance`. Evidence: `evidence/person-b-security-results.xml` (includes the recorded timing values) and `evidence/person-b-regression-console.txt`.
