@@ -74,6 +74,18 @@ def finish(response, request_id, started, method):
     return response
 
 
+# Requests that check a password are throttled per client address: login and recovery,
+# plus the signed-in routes that verify the current password (change password, delete account).
+PASSWORD_CHECKS = {("POST", "/api/me/password"), ("DELETE", "/api/me")}
+
+
+def is_rate_limited(method: str, path: str) -> bool:
+    return (method == "POST" and path.startswith("/api/auth/")) or (
+        method,
+        path.rstrip("/"),
+    ) in PASSWORD_CHECKS
+
+
 @app.middleware("http")
 async def request_boundary(request: Request, call_next):
     request_id = str(uuid4())
@@ -95,7 +107,7 @@ async def request_boundary(request: Request, call_next):
                         request.method,
                     )
             request._body = bytes(body)
-        if request.url.path.startswith("/api/auth/") and request.method == "POST":
+        if is_rate_limited(request.method, request.url.path):
             address = request.client.host if request.client else "unknown"
             # Proxy headers must be trusted only from the configured reverse proxy.
             if not await asyncio.to_thread(rate_limit, sign(address)):

@@ -14,9 +14,9 @@
 
 ### Account
 
-Fields: id, email, normalized_email, password_hash, email_verified_at, timezone, notification_preferences, status, created_at, updated_at, deleted_at.
+Fields: id, email, password_hash, role, active, verified_at, timezone, email_reminders, created_at.
 
-Constraints: unique normalized_email; valid IANA timezone; deletion status controls access.
+Constraints: unique normalized email; role is USER or ADMIN; inactive or unverified accounts cannot authenticate; disabling an account revokes its sessions.
 
 ### Session
 

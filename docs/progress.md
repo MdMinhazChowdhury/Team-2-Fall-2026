@@ -1,12 +1,12 @@
 # TaskTrack implementation progress
 
-Status date: October 25, 2026 (America/New_York).
+Status date: October 26, 2026 (America/New_York).
 
-The previously planning-only repository now contains a web implementation under the approved source/test boundaries. Existing Git history and requirements were retained. The Java desktop source was not copied into this web repository.
+The previously planning-only repository now contains a web implementation under the approved source/test boundaries. Existing Git history and requirements were retained. The Java desktop source was not copied into this web repository; its relevant account and task behaviors were adapted to the web architecture.
 
 ## Implemented
 
-Authentication/session/security APIs and UI; private lists/tasks/checklists; Trash/restoration; concurrency versions; dashboard/filter/search/sort/pagination; calendar; tags/bulk operations; activity and completion-event reporting; timezone/preferences/session/account settings; durable recurrence/reminder functions and Celery configuration; encrypted mail outbox; background export jobs; validated preview/transactional import; versioned Alembic migrations; dependency locks; Compose/Caddy/Dockerfiles and CI configuration.
+Authentication/session/security APIs and UI; account factory, constrained roles, active-state enforcement, administrator account-management API and UI; private lists/tasks/checklists; Trash/restoration; concurrency versions; dashboard/filter/search/sort/pagination; calendar; tags/bulk operations; activity and completion-event reporting; timezone/preferences/session/account settings; durable recurrence/reminder functions and Celery configuration; encrypted mail outbox; background export jobs; validated preview/transactional import; versioned Alembic migrations; dependency locks; Compose/Caddy/Dockerfiles and CI configuration.
 
 ## Local verification
 
@@ -28,3 +28,7 @@ Run the configured full cross-browser/container CI on a supported host, configur
 ## Person C task-core alignment
 
 The current local update adapts task creation and filtering to the existing Python backend. It adds a reusable TaskFactory and TaskFilter, wires task creation/imports/recurrence through the factory, and adds isolated unit tests plus PostgreSQL regression tests. It does not import the separate Java account/database implementation or claim ownership of the pre-existing web application. See `person-c/ALIGNMENT.md` and its evidence directory for this update's results.
+
+## Person B account-core alignment
+
+The current local update ports the supplied account factory and administrator behavior into the existing Python/React architecture. It adds role and active-state persistence, administrator-only account metadata operations, session revocation, protective business rules, an Administration screen, a first-admin promotion command, and focused unit/PostgreSQL tests. It intentionally excludes the incompatible Java/SQLite runtime and insecure SHA-256 password storage. See `person-b/ALIGNMENT.md`.

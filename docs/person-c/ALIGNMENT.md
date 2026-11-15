@@ -92,3 +92,7 @@ I ran the final local checks on October 25, 2026 using Python 3.12.14, Node 24.2
 Evidence: [backend results](evidence/backend-results.xml), [backend console](evidence/backend-console.txt), [Chrome browser console](evidence/browser-console.txt), [frontend console](evidence/frontend-console.txt), [build output](evidence/build-console.txt), [performance](evidence/performance.json), [quality checks](evidence/quality-checks.txt), and [screenshots](evidence/screenshots/). The earlier contributor's evidence files were restored unchanged after the tests generated their outputs.
 
 The original Java-only branch remains separate. This local update starts from the current team web implementation and adds only the task-core alignment described above. The current Word reports and older ZIPs describe earlier Java versions; they must not be submitted as proof of this web implementation without revision. Communication dates/attachments, team acceptance of the design change, and the remaining release gates are still outside these automated test results.
+
+## Subsequent account integration
+
+After this Person C task-core work, the supplied Person B account/admin behavior was separately adapted to the same web architecture. See `docs/person-b/ALIGNMENT.md`. This does not change the ownership or evidence claims in this Person C record.

@@ -1,0 +1,10 @@
+pytest tests/unit tests/backend tests/performance (PostgreSQL 16, Python 3.13, Linux)
+115 passed in 44.16s
+
+ruff check src/backend tests: All checks passed!
+ruff format --check src/backend tests: 43 files already formatted
+mypy: Success: no issues found in 18 source files
+
+Without the main.py fix (new tests kept): 2 failed, 113 passed
+  - test_current_password_guessing_is_rate_limited[POST-/me/password-new_password]
+  - test_current_password_guessing_is_rate_limited[DELETE-/me-confirmed]

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="8" failures="0" errors="0" time="2.1475568">
+    <testsuite name="tests/frontend/dates.test.ts" timestamp="2026-10-27T02:56:38.256Z" hostname="Ian" tests="1" failures="0" errors="0" skipped="0" time="0.0266219">
+        <testcase classname="tests/frontend/dates.test.ts" name="uses the account calendar date instead of the UTC or browser date" time="0.0253633">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/frontend/forms.test.tsx" timestamp="2026-10-27T02:56:38.263Z" hostname="Ian" tests="7" failures="0" errors="0" skipped="0" time="2.1209349">
+        <testcase classname="tests/frontend/forms.test.tsx" name="Account controls &gt; submits credentials without trimming the password" time="0.6663292">
+        </testcase>
+        <testcase classname="tests/frontend/forms.test.tsx" name="Account controls &gt; shows errors and allows retry" time="0.2929356">
+        </testcase>
+        <testcase classname="tests/frontend/forms.test.tsx" name="Account controls &gt; blocks short registration passwords with browser validation" time="0.0448929">
+        </testcase>
+        <testcase classname="tests/frontend/forms.test.tsx" name="Account controls &gt; uses the verification fragment and removes it from the URL" time="0.0322302">
+        </testcase>
+        <testcase classname="tests/frontend/forms.test.tsx" name="Task form controls &gt; saves title, list, date, priority, status, tag, checklist and reordering" time="0.7227924">
+        </testcase>
+        <testcase classname="tests/frontend/forms.test.tsx" name="Task form controls &gt; shows persistence errors without closing the editor" time="0.2506658">
+        </testcase>
+        <testcase classname="tests/frontend/forms.test.tsx" name="Task form controls &gt; cancels without writing and supports removing checklist items" time="0.108663">
+        </testcase>
+    </testsuite>
+</testsuites>
