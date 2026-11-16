@@ -1,0 +1,10 @@
+{
+  "recorded_at": "2026-11-15T23:21:47.923Z",
+  "kind": "automated validation recovery workflow",
+  "completed": true,
+  "elapsed_ms": 464,
+  "rejected_blank_submissions": 4,
+  "invalid_data_api_calls": 0,
+  "corrected_task_writes": 1,
+  "human_usability_study": false
+}

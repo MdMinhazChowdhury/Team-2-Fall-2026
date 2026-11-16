@@ -807,6 +807,8 @@ export function Workspace({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                pattern=".*\S.*"
+                title="Enter a name with at least one non-space character."
                 maxLength={manage.kind === 'list' ? 100 : 40}
                 autoFocus
               />

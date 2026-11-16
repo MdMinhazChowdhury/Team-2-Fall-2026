@@ -142,6 +142,35 @@ describe('Task form controls', () => {
     expect(close).not.toHaveBeenCalled();
     expect(screen.getByLabelText('Title')).toHaveValue('Keep my input');
   });
+  it('blocks whitespace-only titles and checklist items before persistence', async () => {
+    const { saved } = form();
+    const user = userEvent.setup();
+    await user.type(screen.getByLabelText('Title'), '   ');
+    await user.click(screen.getByRole('button', { name: 'Save task' }));
+    expect(screen.getByLabelText('Title')).toBeInvalid();
+    expect(api).not.toHaveBeenCalled();
+    await user.clear(screen.getByLabelText('Title'));
+    await user.type(screen.getByLabelText('Title'), 'Valid title');
+    await user.click(
+      screen.getByRole('button', { name: '+ Add checklist item' }),
+    );
+    await user.type(
+      screen.getByLabelText('Checklist item 1', { exact: true }),
+      '   ',
+    );
+    await user.click(screen.getByRole('button', { name: 'Save task' }));
+    expect(
+      screen.getByLabelText('Checklist item 1', { exact: true }),
+    ).toBeInvalid();
+    expect(api).not.toHaveBeenCalled();
+    expect(saved).not.toHaveBeenCalled();
+    await user.type(
+      screen.getByLabelText('Checklist item 1', { exact: true }),
+      'Review',
+    );
+    await user.click(screen.getByRole('button', { name: 'Save task' }));
+    await waitFor(() => expect(saved).toHaveBeenCalledOnce());
+  });
   it('cancels without writing and supports removing checklist items', async () => {
     const { close } = form();
     const user = userEvent.setup();

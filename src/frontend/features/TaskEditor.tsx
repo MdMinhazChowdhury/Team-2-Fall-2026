@@ -76,6 +76,8 @@ export function TaskEditor({
               value={form.title}
               onChange={(e) => patch({ title: e.target.value })}
               required
+              pattern=".*\S.*"
+              title="Enter a title with at least one non-space character."
               maxLength={200}
               autoFocus
             />
@@ -155,6 +157,8 @@ export function TaskEditor({
                 aria-label={`Checklist item ${index + 1}`}
                 value={item.text}
                 required
+                pattern=".*\S.*"
+                title="Enter a checklist item with at least one non-space character."
                 maxLength={200}
                 onChange={(e) =>
                   patch({

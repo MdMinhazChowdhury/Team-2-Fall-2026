@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="468" height="284" preserveAspectRatio="xMinYMin meet" viewBox="0 0 468 284" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="468" height="284"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-284)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="8" y="228" width="452" height="43" style="stroke: rgb(38%,44%,50%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(94%,95%,96%); fill-rule: evenodd;"/>
+			<text x="20" y="254" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,508) scale(1,-1)">React GUI</text>
+			<text x="20" y="238" style="font-family: Helvetica; font-size: 9px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,476) scale(1,-1)">Auth | Workspace | TaskEditor | Views</text>
+			<rect x="8" y="161" width="452" height="43" style="stroke: rgb(38%,44%,50%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(94%,95%,96%); fill-rule: evenodd;"/>
+			<text x="20" y="187" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,374) scale(1,-1)">api/client.ts and React Query</text>
+			<text x="20" y="171" style="font-family: Helvetica; font-size: 9px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,342) scale(1,-1)">async fetch | cookies | CSRF | errors | cache refresh</text>
+			<rect x="8" y="94" width="452" height="43" style="stroke: rgb(38%,44%,50%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(94%,95%,96%); fill-rule: evenodd;"/>
+			<text x="20" y="120" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,240) scale(1,-1)">FastAPI routers and services</text>
+			<text x="20" y="104" style="font-family: Helvetica; font-size: 9px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,208) scale(1,-1)">api.py | task_api.py | extras_api.py</text>
+			<rect x="8" y="27" width="452" height="43" style="stroke: rgb(38%,44%,50%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(94%,95%,96%); fill-rule: evenodd;"/>
+			<text x="20" y="53" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,106) scale(1,-1)">SQLAlchemy models and PostgreSQL</text>
+			<text x="20" y="37" style="font-family: Helvetica; font-size: 9px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,74) scale(1,-1)">account ownership | versions | transactional persistence</text>
+			<path d="M 234,226 L 234,207 Z" style="stroke: rgb(20%,33%,42%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="230 212, 234 206, 238 212" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1; fill: rgb(20%,33%,42%); fill-rule: evenodd;"/>
+			<path d="M 234,159 L 234,140 Z" style="stroke: rgb(20%,33%,42%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="230 145, 234 139, 238 145" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1; fill: rgb(20%,33%,42%); fill-rule: evenodd;"/>
+			<path d="M 234,92 L 234,73 Z" style="stroke: rgb(20%,33%,42%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="230 78, 234 72, 238 78" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1; fill: rgb(20%,33%,42%); fill-rule: evenodd;"/>
+		</g>
+	</g>
+</svg>

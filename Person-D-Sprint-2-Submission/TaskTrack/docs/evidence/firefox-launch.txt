@@ -1,0 +1,21 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+browserType.launch: Timeout 30000ms exceeded.
+Call log:
+  - <launching> C:\Users\lloyd\Downloads\Team-2-Fall-2026\.local\browsers\firefox-1555\firefox\firefox.exe -no-remote -headless -profile C:\Users\lloyd\Downloads\Team-2-Fall-2026\.local\browser-tmp\playwright_firefoxdev_profile-v7K9VJ -juggler-pipe -silent
+  - <launched> pid=26784
+  - [pid=26784][err] *** You are running in headless mode.
+
+    at C:\Users\lloyd\Downloads\Team-2-Fall-2026\.local\firefox-check.mjs:2:29
+    at async node:internal/modules/esm/loader:639:26 {
+  log: [
+    '  - <launching> C:\\Users\\lloyd\\Downloads\\Team-2-Fall-2026\\.local\\browsers\\firefox-1555\\firefox\\firefox.exe -no-remote -headless -profile C:\\Users\\lloyd\\Downloads\\Team-2-Fall-2026\\.local\\browser-tmp\\playwright_firefoxdev_profile-v7K9VJ -juggler-pipe -silent',
+    '  - <launched> pid=26784',
+    '  - [pid=26784][err] *** You are running in headless mode.'
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.15.0

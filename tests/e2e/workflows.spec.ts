@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
 
 test.beforeEach(async ({ page }) => {
@@ -300,4 +300,106 @@ test('tags, bulk actions, calendar, schedules, reports, preferences and import/e
     path: `docs/evidence/screenshots/${info.project.name}-organization.png`,
     fullPage: true,
   });
+});
+
+test('client validation blocks blank names and tasks before API calls and permits correction', async ({
+  page,
+}, info) => {
+  mkdirSync('docs/evidence/screenshots', { recursive: true });
+  await page.goto('/');
+  await page.screenshot({
+    path: `docs/evidence/screenshots/${info.project.name}-login.png`,
+    fullPage: true,
+  });
+  await registerLogin(page);
+  const writes: string[] = [];
+  page.on('request', (request) => {
+    if (
+      request.method() === 'POST' &&
+      /\/api\/(lists|tags|tasks)$/.test(request.url())
+    )
+      writes.push(request.url());
+  });
+  for (const kind of ['list', 'tag']) {
+    await page
+      .getByRole('button', { name: `Create ${kind}`, exact: true })
+      .click();
+    await page.getByLabel('Name', { exact: true }).fill('   ');
+    await page
+      .getByRole('button', { name: `Save ${kind}`, exact: true })
+      .click();
+    expect(
+      await page
+        .getByLabel('Name', { exact: true })
+        .evaluate((input: HTMLInputElement) => input.validity.patternMismatch),
+    ).toBe(true);
+    expect(writes).toHaveLength(0);
+    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  }
+  await list(page);
+  expect(writes).toHaveLength(1);
+  const started = performance.now();
+  await page.getByRole('button', { name: 'New task', exact: true }).click();
+  await page.getByLabel('Title', { exact: true }).fill('   ');
+  await page.getByRole('button', { name: 'Save task', exact: true }).click();
+  expect(
+    await page
+      .getByLabel('Title', { exact: true })
+      .evaluate((input: HTMLInputElement) => input.validity.patternMismatch),
+  ).toBe(true);
+  expect(writes).toHaveLength(1);
+  await page.getByLabel('Title', { exact: true }).fill('Sprint 2 validation');
+  await page
+    .getByRole('button', { name: '+ Add checklist item', exact: true })
+    .click();
+  await page.getByLabel('Checklist item 1', { exact: true }).fill('   ');
+  await page.getByRole('button', { name: 'Save task', exact: true }).click();
+  expect(
+    await page
+      .getByLabel('Checklist item 1', { exact: true })
+      .evaluate((input: HTMLInputElement) => input.validity.patternMismatch),
+  ).toBe(true);
+  expect(writes).toHaveLength(1);
+  await page
+    .getByLabel('Checklist item 1', { exact: true })
+    .fill('Review validation');
+  await page.screenshot({
+    path: `docs/evidence/screenshots/${info.project.name}-task-editor.png`,
+    fullPage: true,
+  });
+  await page.getByRole('button', { name: 'Save task', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: 'Sprint 2 validation', exact: true }),
+  ).toBeVisible();
+  expect(writes).toHaveLength(2);
+  const elapsed = performance.now() - started;
+  writeFileSync(
+    `docs/evidence/${info.project.name}-workflow-metrics.json`,
+    JSON.stringify(
+      {
+        recorded_at: new Date().toISOString(),
+        kind: 'automated validation recovery workflow',
+        completed: true,
+        elapsed_ms: Math.round(elapsed),
+        rejected_blank_submissions: 4,
+        invalid_data_api_calls: 0,
+        corrected_task_writes: 1,
+        human_usability_study: false,
+      },
+      null,
+      2,
+    ),
+  );
+  await page
+    .getByRole('button', { name: 'Delete Sprint 2 validation', exact: true })
+    .click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.screenshot({
+    path: `docs/evidence/screenshots/${info.project.name}-confirmation.png`,
+    fullPage: true,
+  });
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: 'Sprint 2 validation', exact: true }),
+  ).toBeVisible();
 });

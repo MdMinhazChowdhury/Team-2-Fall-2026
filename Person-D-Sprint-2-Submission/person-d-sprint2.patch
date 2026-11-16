@@ -1,0 +1,185 @@
+--- a/src/frontend/features/TaskEditor.tsx
++++ b/src/frontend/features/TaskEditor.tsx
+@@ -76,6 +76,8 @@
+               value={form.title}
+               onChange={(e) => patch({ title: e.target.value })}
+               required
++              pattern=".*\S.*"
++              title="Enter a title with at least one non-space character."
+               maxLength={200}
+               autoFocus
+             />
+@@ -155,6 +157,8 @@
+                 aria-label={`Checklist item ${index + 1}`}
+                 value={item.text}
+                 required
++                pattern=".*\S.*"
++                title="Enter a checklist item with at least one non-space character."
+                 maxLength={200}
+                 onChange={(e) =>
+                   patch({
+--- a/src/frontend/routes/Workspace.tsx
++++ b/src/frontend/routes/Workspace.tsx
+@@ -800,6 +800,8 @@
+                 value={name}
+                 onChange={(e) => setName(e.target.value)}
+                 required
++                pattern=".*\S.*"
++                title="Enter a name with at least one non-space character."
+                 maxLength={manage.kind === 'list' ? 100 : 40}
+                 autoFocus
+               />
+--- a/tests/frontend/forms.test.tsx
++++ b/tests/frontend/forms.test.tsx
+@@ -142,6 +142,35 @@
+     expect(close).not.toHaveBeenCalled();
+     expect(screen.getByLabelText('Title')).toHaveValue('Keep my input');
+   });
++  it('blocks whitespace-only titles and checklist items before persistence', async () => {
++    const { saved } = form();
++    const user = userEvent.setup();
++    await user.type(screen.getByLabelText('Title'), '   ');
++    await user.click(screen.getByRole('button', { name: 'Save task' }));
++    expect(screen.getByLabelText('Title')).toBeInvalid();
++    expect(api).not.toHaveBeenCalled();
++    await user.clear(screen.getByLabelText('Title'));
++    await user.type(screen.getByLabelText('Title'), 'Valid title');
++    await user.click(
++      screen.getByRole('button', { name: '+ Add checklist item' }),
++    );
++    await user.type(
++      screen.getByLabelText('Checklist item 1', { exact: true }),
++      '   ',
++    );
++    await user.click(screen.getByRole('button', { name: 'Save task' }));
++    expect(
++      screen.getByLabelText('Checklist item 1', { exact: true }),
++    ).toBeInvalid();
++    expect(api).not.toHaveBeenCalled();
++    expect(saved).not.toHaveBeenCalled();
++    await user.type(
++      screen.getByLabelText('Checklist item 1', { exact: true }),
++      'Review',
++    );
++    await user.click(screen.getByRole('button', { name: 'Save task' }));
++    await waitFor(() => expect(saved).toHaveBeenCalledOnce());
++  });
+   it('cancels without writing and supports removing checklist items', async () => {
+     const { close } = form();
+     const user = userEvent.setup();
+--- a/tests/e2e/workflows.spec.ts
++++ b/tests/e2e/workflows.spec.ts
+@@ -1,6 +1,6 @@
+ import { test, expect, type Page } from '@playwright/test';
+ import { execFileSync } from 'node:child_process';
+-import { mkdirSync } from 'node:fs';
++import { mkdirSync, writeFileSync } from 'node:fs';
+ import AxeBuilder from '@axe-core/playwright';
+ 
+ test.beforeEach(async ({ page }) => {
+@@ -301,3 +301,105 @@
+     fullPage: true,
+   });
+ });
++
++test('client validation blocks blank names and tasks before API calls and permits correction', async ({
++  page,
++}, info) => {
++  mkdirSync('docs/evidence/screenshots', { recursive: true });
++  await page.goto('/');
++  await page.screenshot({
++    path: `docs/evidence/screenshots/${info.project.name}-login.png`,
++    fullPage: true,
++  });
++  await registerLogin(page);
++  const writes: string[] = [];
++  page.on('request', (request) => {
++    if (
++      request.method() === 'POST' &&
++      /\/api\/(lists|tags|tasks)$/.test(request.url())
++    )
++      writes.push(request.url());
++  });
++  for (const kind of ['list', 'tag']) {
++    await page
++      .getByRole('button', { name: `Create ${kind}`, exact: true })
++      .click();
++    await page.getByLabel('Name', { exact: true }).fill('   ');
++    await page
++      .getByRole('button', { name: `Save ${kind}`, exact: true })
++      .click();
++    expect(
++      await page
++        .getByLabel('Name', { exact: true })
++        .evaluate((input: HTMLInputElement) => input.validity.patternMismatch),
++    ).toBe(true);
++    expect(writes).toHaveLength(0);
++    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
++  }
++  await list(page);
++  expect(writes).toHaveLength(1);
++  const started = performance.now();
++  await page.getByRole('button', { name: 'New task', exact: true }).click();
++  await page.getByLabel('Title', { exact: true }).fill('   ');
++  await page.getByRole('button', { name: 'Save task', exact: true }).click();
++  expect(
++    await page
++      .getByLabel('Title', { exact: true })
++      .evaluate((input: HTMLInputElement) => input.validity.patternMismatch),
++  ).toBe(true);
++  expect(writes).toHaveLength(1);
++  await page.getByLabel('Title', { exact: true }).fill('Sprint 2 validation');
++  await page
++    .getByRole('button', { name: '+ Add checklist item', exact: true })
++    .click();
++  await page.getByLabel('Checklist item 1', { exact: true }).fill('   ');
++  await page.getByRole('button', { name: 'Save task', exact: true }).click();
++  expect(
++    await page
++      .getByLabel('Checklist item 1', { exact: true })
++      .evaluate((input: HTMLInputElement) => input.validity.patternMismatch),
++  ).toBe(true);
++  expect(writes).toHaveLength(1);
++  await page
++    .getByLabel('Checklist item 1', { exact: true })
++    .fill('Review validation');
++  await page.screenshot({
++    path: `docs/evidence/screenshots/${info.project.name}-task-editor.png`,
++    fullPage: true,
++  });
++  await page.getByRole('button', { name: 'Save task', exact: true }).click();
++  await expect(
++    page.getByRole('button', { name: 'Sprint 2 validation', exact: true }),
++  ).toBeVisible();
++  expect(writes).toHaveLength(2);
++  const elapsed = performance.now() - started;
++  writeFileSync(
++    `docs/evidence/${info.project.name}-workflow-metrics.json`,
++    JSON.stringify(
++      {
++        recorded_at: new Date().toISOString(),
++        kind: 'automated validation recovery workflow',
++        completed: true,
++        elapsed_ms: Math.round(elapsed),
++        rejected_blank_submissions: 4,
++        invalid_data_api_calls: 0,
++        corrected_task_writes: 1,
++        human_usability_study: false,
++      },
++      null,
++      2,
++    ),
++  );
++  await page
++    .getByRole('button', { name: 'Delete Sprint 2 validation', exact: true })
++    .click();
++  await expect(page.getByRole('dialog')).toBeVisible();
++  await page.screenshot({
++    path: `docs/evidence/screenshots/${info.project.name}-confirmation.png`,
++    fullPage: true,
++  });
++  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
++  await expect(
++    page.getByRole('button', { name: 'Sprint 2 validation', exact: true }),
++  ).toBeVisible();
++});
