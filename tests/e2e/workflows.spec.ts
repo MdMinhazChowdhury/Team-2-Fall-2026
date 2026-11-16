@@ -324,17 +324,29 @@ test('client validation blocks blank names and tasks before API calls and permit
     await page
       .getByRole('button', { name: `Create ${kind}`, exact: true })
       .click();
-    await page.getByLabel('Name', { exact: true }).fill('   ');
-    await page
+    const dialog = page.getByRole('dialog', {
+      name: `Create ${kind}`,
+      exact: true,
+    });
+    const name = dialog.getByLabel('Name', { exact: true });
+    await expect(dialog).toBeVisible();
+    await name.fill('   ');
+    await dialog
       .getByRole('button', { name: `Save ${kind}`, exact: true })
       .click();
     expect(
-      await page
-        .getByLabel('Name', { exact: true })
-        .evaluate((input: HTMLInputElement) => input.validity.patternMismatch),
+      await name.evaluate(
+        (input: HTMLInputElement) => input.validity.patternMismatch,
+      ),
     ).toBe(true);
     expect(writes).toHaveLength(0);
-    await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+    // Dismiss native validation UI before clicking Cancel. Firefox can consume
+    // the first click outside that UI without activating the underlying button.
+    await name.fill('Cancelled draft');
+    await name.press('Tab');
+    await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+    await expect(dialog).toHaveCount(0);
+    expect(writes).toHaveLength(0);
   }
   await list(page);
   expect(writes).toHaveLength(1);
